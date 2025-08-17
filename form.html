@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Registration Form</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input, textarea, select {
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+        }
+
+        form {
+            width: 50%;
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 20px 30px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 95%;
+            height: 25px;
+            padding: 5px 10px;
+            border: 1px solid #242323;
+            border-radius: 5px;
+        }
+
+        select {
+            width: 100%;
+            margin: 20px 0;
+            height: 40px;
+        }
+
+        textarea{
+            height: 100px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            height: 40px;
+            border-radius: 5px;
+            border: none;
+            box-shadow: 2px 5px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            background-color: #0d6efd;
+
+        }
+    </style>
+</head>
+
+<body>
+    <form action="process.php" method="POST">
+        <h1>Registration Form</h1>
+        <input type="text" placeholder="Full Name" name="name" required><br>
+        <input type="text" placeholder="Email" name="email" required><br>
+        <input type="number" placeholder="Age" name="age" value="">
+        <p>Choose Gender: </p>
+        <input type="radio" name="gender" value="male"> Male
+        <input type="radio" name="gender" value="female"> Female
+        <br>
+        <select name="fcolor">
+            <option value="">Choose Favorite Color</option>
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+        </select>
+        <br>
+        <textarea placeholder="message" name="message"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>
