@@ -32,12 +32,12 @@
                 $fcolor = $_POST["fcolor"];
                 $message = $_POST["message"];
 
-                echo "<td>".$name."</td>";
-                echo "<td>".$email."</td>";
-                echo "<td>".$age."</td>";
-                echo "<td>".$gender."</td>";
-                echo "<td>".$fcolor."</td>";
-                echo "<td>".$message."</td>";
+                echo "<td>" . htmlspecialchars($name) . "</td>";
+                echo "<td>" . htmlspecialchars($email) . "</td>";
+                echo "<td>" . htmlspecialchars($age) . "</td>";
+                echo "<td>" . htmlspecialchars($gender) . "</td>";
+                echo "<td>" . htmlspecialchars($fcolor) . "</td>";
+                echo "<td>" . htmlspecialchars($message) . "</td>";
             ?>
         </tr>
     </tbody>
