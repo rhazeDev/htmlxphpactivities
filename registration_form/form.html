@@ -62,16 +62,16 @@
 </head>
 
 <body>
-    <form action="process.php" method="POST">
+    <form action="saveinfo.php" method="POST">
         <h1>Registration Form</h1>
-        <input type="text" placeholder="Full Name" name="name" required><br>
-        <input type="email" placeholder="Email" name="email" required><br>
+        <input type="text" placeholder="Full Name" name="fullname" required><br>
+        <input type="text" placeholder="Email" name="email" required><br>
         <input type="number" placeholder="Age" name="age" value="">
         <p>Choose Gender: </p>
         <input type="radio" name="gender" value="male"> Male
         <input type="radio" name="gender" value="female"> Female
         <br>
-        <select name="fcolor">
+        <select name="color">
             <option value="">Choose Favorite Color</option>
             <option value="red">Red</option>
             <option value="green">Green</option>
