@@ -20,7 +20,7 @@ registration_form
 ## Database Setup
 
 1. Open phpMyAdmin: `http://localhost/phpmyadmin`
-2. Create a new database called `registration_db`
+2. Create a new database called `customer_db`
 3. Create a table called `customers` with these fields:
    - `id` (INT, AUTO_INCREMENT, PRIMARY KEY)
    - `name` (VARCHAR 30)
