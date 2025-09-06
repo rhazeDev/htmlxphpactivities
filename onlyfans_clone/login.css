@@ -1,0 +1,170 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+
+.right-container,
+.left-container {
+    height: 100vh;
+}
+
+.left-container {
+    background: url('images/background-left.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex: 1;
+    min-width: 300px;
+}
+
+.right-container {
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    min-width: 300px;
+    overflow-y: auto;
+}
+
+.inner-container {
+    width: 100%;
+    max-width: 320px;
+    margin: 40px 100px;
+}
+
+.data-left {
+    margin: 100px 45%;
+    width: 300px;
+}
+
+.blue {
+    color: #00aff0;
+}
+
+.hyperlink {
+    text-decoration: none;
+}
+
+.taena {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.taena-2 {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: white;
+    padding: 0 5px;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+    top: 0;
+    left: 10px;
+    font-size: 12px;
+    color: #00aff0;
+    transform: translateY(-50%);
+}
+
+#name,
+#email,
+#password {
+    width: 100%;
+    height: 40px;
+    padding: 0 15px;
+    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    outline: none;
+    background: white;
+}
+
+#name:focus,
+#email:focus,
+#password:focus {
+    border: 1px solid #00aff0;
+}
+
+#login {
+    background-color: #00aff0;
+    border: none;
+    width: 100%;
+    height: 40px;
+    padding: 0 15px;
+    font-weight: 700;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#terms {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+.dummy {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 40px;
+    background-color: #00aff0;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.button-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.google {
+    background-color: #4285f4;
+}

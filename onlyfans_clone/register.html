@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onlyfans Login</title>
+    <link href="login.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="left-container">
+        <img src="./images/data-left.png" alt="data left" class="data-left">
+    </div>
+
+    <div class="right-container">
+        <div class="inner-container">
+            <form action="auth.php" method="post">
+                <input type="hidden" name="action" value="register">
+                <p><b>Create your account</b></p>
+                <div class="input-group">
+                    <input type="text" id="name" name="name" required>
+                    <label for="name">Name</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" required>
+                    <label for="password">Password</label>
+                </div>
+                <input type="submit" id="login" value="SIGN UP">
+            </form>
+
+            <p id="terms">By logging in and using OnlyFans, you agree to our <span class="blue">Terms of Service</span>
+                and <span class="blue">Privacy Policy</span>, and confirm that you are at least 18 years old.</p>
+
+            <div class="taena">
+                <p>Already have an account?</p>
+                <a class="blue hyperlink" href="login.html">Log in</a>
+            </div>
+
+            <div class="taena-2">
+                <button class="dummy">
+                    <!-- <img src="/images/icons8-x-logo.svg" class="button-logo"> -->
+                    SIGN IN WITH X
+                </button>
+                <button class="dummy google">
+                    <!-- <img src="/images/icons8-google.svg" class="button-logo"> -->
+                    SIGN IN WITH GOOGLE
+                </button>
+                <button class="dummy">
+                    <!-- <img src="/images/sprite.svg" class="button-logo"> -->
+                    PASSWORDLESS SIGN IN
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
