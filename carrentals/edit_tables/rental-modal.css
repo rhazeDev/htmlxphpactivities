@@ -1,0 +1,231 @@
+/* Rental Return Modal Styles */
+
+/* Modal Animation */
+@keyframes modalSlideIn {
+    from { 
+        transform: translateY(-50px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+/* Modal Overlay */
+.payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Content Container */
+.payment-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Modal Header */
+.modal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-icon-container {
+    width: 60px;
+    height: 60px;
+    background: #fef2f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.modal-icon {
+    color: #ef4444;
+    font-size: 1.5rem;
+}
+
+.modal-title {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-subtitle {
+    color: #6b7280;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Due Items List */
+.due-items-container {
+    margin: 1.5rem 0;
+}
+
+.due-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+}
+
+.due-item-description {
+    display: flex;
+    align-items: center;
+    color: #374151;
+}
+
+.due-item-icon {
+    margin-right: 0.5rem;
+    color: #ef4444;
+}
+
+.due-amount {
+    font-weight: bold;
+    color: #dc2626;
+    font-size: 1rem;
+}
+
+/* Total Amount Section */
+.total-section {
+    padding: 1rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-label {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.total-amount {
+    color: #dc2626;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Confirmation Text */
+.confirmation-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 1rem 0;
+    line-height: 1.4;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.btn-confirm {
+    background: #059669;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: #047857;
+    transform: translateY(-1px);
+}
+
+.btn-cancel {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-cancel:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Button Icons */
+.btn-icon {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .payment-modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .modal-btn {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .due-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .due-amount {
+        align-self: flex-end;
+    }
+}
+
+/* Additional Utility Classes */
+.text-center { text-align: center; }
+.text-success { color: #059669; }
+.text-danger { color: #dc2626; }
+.text-warning { color: #d97706; }
+.text-muted { color: #6b7280; }
+
+.bg-success-light { background: #f0fdf4; }
+.bg-danger-light { background: #fef2f2; }
+.bg-warning-light { background: #fffbeb; }
+
+.border-success { border-color: #059669; }
+.border-danger { border-color: #ef4444; }
+.border-warning { border-color: #f59e0b; }

@@ -1,7 +1,6 @@
 # Car Rental Management System Database
 
-## Database Name
-`vehiclerental`
+## Database Name: vehiclerental
 
 ## Database Tables
 
@@ -15,7 +14,7 @@ Customer information and licensing details.
 | LicenseNumber | varchar(20) | | Driver's license number |
 | ContactNumber | varchar(15) | | Phone number |
 | Email | varchar(25) | | Email address |
-| LicenseImg | varchar(255) | | Additional licensing information |
+| LicenseImg | varchar(255) | | License image file path |
 
 ### 2. vehicles
 Vehicle inventory and specifications.
@@ -27,6 +26,7 @@ Vehicle inventory and specifications.
 | PlateNumber | varchar(10) | | License plate number |
 | DailyRate | double | | Daily rental rate |
 | Image | varchar(255) | | Vehicle image file path |
+| Capacity | int(11) | | Vehicle seating capacity |
 | Status | varchar(15) | | Vehicle availability status |
 
 ### 3. rentals
@@ -42,8 +42,25 @@ Rental transaction records.
 | ReturnedDate | date | | Actual return date |
 | TotalCost | double | | Total rental cost |
 | NoOfDays | int(11) | | Number of rental days |
+| RentalTransport | varchar(15) | | Transportation method |
+| DeliveryAddress | varchar(120) | | Delivery address for rental |
+| CarImage | varchar(255) | | Car image file path |
 
-### 4. distances
+### 4. payments
+Payment records for rentals.
+
+| Column Name | Data Type | Constraints | Description |
+|-------------|-----------|-------------|-------------|
+| PaymentID | int(11) | PRIMARY KEY | Unique payment identifier |
+| RentalID | int(11) | FOREIGN KEY | References rentals.RentalID |
+| Amount | double(6,2) | | Payment amount |
+| RemainingBalance | double(8,2) | | Remaining balance for downpayment |
+| DueAmount | int(11) | | Due payment amount |
+| PaymentDate | date | | Date of payment |
+| Method | varchar(50) | | Payment method (cash, DownPayment) |
+| Status | varchar(10) | | Payment status (Paid, Partial, Unpaid) |
+
+### 5. distances
 Distance tracking for rentals.
 
 | Column Name | Data Type | Constraints | Description |
@@ -63,27 +80,27 @@ Issue tracking and resolution.
 |-------------|-----------|-------------|-------------|
 | IssueID | int(11) | PRIMARY KEY | Unique issue identifier |
 | RentalID | int(11) | FOREIGN KEY | References rentals.RentalID |
-| VehicleID | int(11) | FOREIGN KEY | References vehicles.VehicleID |
-| CustomerID | int(11) | FOREIGN KEY | References customers.CustomerID |
 | Description | text | | Issue description |
 | DateReported | date | | Date when issue was reported |
 | DateResolved | date | | Date when issue was resolved |
 | Proof | varchar(255) | | Evidence/proof file path |
 | Status | varchar(15) | | Issue status (open, resolved, etc.) |
 
-### 6. users
+### 7. users
 System user accounts.
 
 | Column Name | Data Type | Constraints | Description |
 |-------------|-----------|-------------|-------------|
 | id | int(11) | PRIMARY KEY | Unique user identifier |
 | username | varchar(30) | | System username |
-| password | varchar(255) | | Encrypted password |
+| password | varchar(30) | | User password |
+| enabled | boolean | | If the account is enabled |
 
 ## Relationships
 
 - **customers** → **rentals**: One-to-many (CustomerID)
 - **vehicles** → **rentals**: One-to-many (VehicleID)
+- **rentals** → **payments**: One-to-many (RentalID)
 - **rentals** → **distances**: One-to-many (RentalID)
 - **rentals** → **issues**: One-to-many (RentalID)
 - **vehicles** → **distances**: One-to-many (VehicleID)
@@ -102,10 +119,3 @@ System user accounts.
    - `double` for decimal values (costs, rates)
 4. **File Storage**: Images and proof files are stored as file paths in varchar fields
 5. **Status Fields**: Used for tracking vehicle availability and issue resolution states
-
-# For image uploads
-Create the following folders for image uploads and ensure they are readable (e.g., with permission 755):
-
-- `issues/`  (for issue proof images)
-- `profiles/` (for customer license images)
-- `vehicles/` (for vehicle images)

@@ -1,16 +1,30 @@
 <?php
-// Include database connection
+session_start();
 include 'conn.php';
 
-// Check if ID is provided
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 if (!isset($_GET['id'])) {
     die("No user ID provided.");
 }
 
-// Delete query
 $tableName = $_GET['table'];
 $id = intval($_GET['id']);
-$pkey = substr($tableName, 0, -1) . 'ID';
+
+if ($tableName == 'Users') {
+    $pkey = 'id';
+} else {
+    $pkey = substr($tableName, 0, -1) . 'ID';
+}
+
+if ($tableName == 'Users' && $id == 1) {
+    echo "<p style='color:red;'>Error: Cannot delete the admin user!</p>";
+    echo "<a href='dashboard.php?table=".$tableName."'>Back to ".$tableName." List</a>";
+    exit;
+}
 
 $sql = "DELETE FROM ".$tableName." WHERE ".$pkey." = ?";
 $stmt = $conn->prepare($sql);
