@@ -1,0 +1,65 @@
+{
+  "Vehicles": {
+    "PlateNumber": "Plate #",
+    "Model": "Model",
+    "Status": "Status",
+    "DailyRate": "Price/Day",
+    "Image": "Image",
+    "Description": "Description"
+  },
+  "Customers": {
+    "Name": "Name",
+    "Phone": "Phone",
+    "Email": "Email",
+    "Address": "Address",
+    "LicenseNumber": "License #",
+    "LicenseImg": "License"
+  },
+  "Rentals": {
+    "PickUpDate": "Pickup Date",
+    "ToReturnDate": "Due Date",
+    "ReturnedDate": "Returned Date",
+    "TotalCost": "Total Cost",
+    "NoOfDays": "Days",
+    "RentalTransport": "Transport",
+    "DeliveryAddress": "Delivery Address",
+    "CarImage": "Image"
+  },
+  "Issues": {
+    "Description": "Issue",
+    "DateReported": "Reported",
+    "Status": "Status",
+    "Proof": "Proof",
+    "DateResolved": "Resolved"
+  },
+  "Distances": {
+    "KmBefore": "Starting KM",
+    "KmAfter": "Final KM",
+    "KmUsed": "KM Used",
+    "DateRecorded": "Date Recorded"
+  },
+  "Payments": {
+    "Amount": "Amount Paid",
+    "RemainingBalance": "Remaining Balance",
+    "DueAmount": "Due Amount",
+    "PaymentDate": "Payment Date",
+    "Method": "Payment Type",
+    "Status": "Status"
+  },
+  "Users": {
+    "username": "Username",
+    "password": "Password",
+    "enabled": "Status"
+  },
+  "default_headers": {
+    "CustomerID": "Customer",
+    "VehicleID": "Vehicle",
+    "RentalID": "Rental",
+    "PaymentID": "Payment",
+    "IssueID": "Issue",
+    "DistanceID": "Distance",
+    "CreatedAt": "Created",
+    "UpdatedAt": "Updated",
+    "ID": "ID"
+  }
+}
