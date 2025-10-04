@@ -70,12 +70,15 @@ $conn->close();
                     </label>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group password-group">
                     <input type="password" id="password" name="password" required>
                     <label for="password">
                         <i class="fas fa-lock"></i>
                         Password
                     </label>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </button>
                 </div>
 
                 <button type="submit" class="login-button">
@@ -85,5 +88,19 @@ $conn->close();
             </form>
         </div>
     </div>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+    </script>
 </body>
 </html>
