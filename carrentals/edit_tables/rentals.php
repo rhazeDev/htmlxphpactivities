@@ -35,24 +35,24 @@ if (!$isReturned) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$isReturned && isset($_POST['return_action'])) {
-                $returnedDate = $_POST['ReturnedDate'];
+        $returnedDate = $_POST['ReturnedDate'];
         $kmAfter = $_POST['kmAfter'];
         $paymentConfirmed = isset($_POST['payment_confirmed']) && $_POST['payment_confirmed'] == '1';
         $conn->autocommit(FALSE);
 
         try {
-                        $conn->prepare("UPDATE Rentals SET ReturnedDate = ? WHERE RentalID = ?")->execute([$returnedDate, $id]);
+            $conn->prepare("UPDATE Rentals SET ReturnedDate = ? WHERE RentalID = ?")->execute([$returnedDate, $id]);
 
-                        if ($distance) {
+            if ($distance) {
                 $kmUsed = $kmAfter - $distance['KmBefore'];
                 $conn->prepare("UPDATE Distances SET KmAfter = ?, KmUsed = ?, DateRecorded = ? WHERE DistanceID = ?")->execute([$kmAfter, $kmUsed, $returnedDate, $distance['DistanceID']]);
             } else {
                 $kmBefore = $_POST['kmBefore'] ?? 0;
                 $kmUsed = $kmAfter - $kmBefore;
-                $conn->prepare("INSERT INTO Distances (RentalID, VehicleID, DateRecorded, KmBefore, KmAfter, KmUsed) VALUES (?, ?, ?, ?, ?, ?)")->execute([$id, $rental['VehicleID'], $returnedDate, $kmBefore, $kmAfter, $kmUsed]);
+                $conn->prepare("INSERT INTO Distances (RentalID, DateRecorded, KmBefore, KmAfter, KmUsed) VALUES (?, ?, ?, ?, ?)")->execute([$id, $returnedDate, $kmBefore, $kmAfter, $kmUsed]);
             }
 
-                        $hasIssue = false;
+            $hasIssue = false;
             if (isset($_POST['hasIssue']) && !empty($_POST['issueDescription'])) {
                 $hasIssue = true;
                 $proofPath = '';
@@ -68,60 +68,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $conn->prepare("INSERT INTO Issues (RentalID, Description, DateReported, Proof, Status) VALUES (?, ?, ?, ?, 'Pending')")->execute([$id, $_POST['issueDescription'], $returnedDate, $proofPath]);
             }
 
-                        $totalDueAmount = 0;
+            $totalDueAmount = 0;
             $lateCharge = 0;
 
-                        if (new DateTime($returnedDate) > new DateTime($rental['ToReturnDate'])) {
+            if (new DateTime($returnedDate) > new DateTime($rental['ToReturnDate'])) {
                 $lateDays = (new DateTime($returnedDate))->diff(new DateTime($rental['ToReturnDate']))->days;
                 $lateCharge = $lateDays * ($rental['DailyRate'] * 1.5);
                 $totalDueAmount += $lateCharge;
             }
 
-                        if ($payment) {
+            if ($payment) {
                 $existingDue = $payment['DueAmount'];
                 $remainingBalance = 0;
 
-                                if (strtolower($payment['Method']) == 'downpayment' && $payment['RemainingBalance'] > 0) {
+                if (strtolower($payment['Method']) == 'downpayment' && $payment['RemainingBalance'] > 0) {
                     $remainingBalance = $payment['RemainingBalance'];
                     $totalDueAmount += $remainingBalance;
                 }
 
-                                $totalDueAmount += $existingDue;
 
-                                if ($paymentConfirmed && $totalDueAmount > 0) {
+                if ($paymentConfirmed && $totalDueAmount > 0) {
                     $totalDueAmount = 0;
                 }
 
-                                $status = $totalDueAmount > 0 ? 'Partial' : 'Paid';
+                $status = $totalDueAmount > 0 ? 'Partial' : 'Paid';
                 $updatePaymentStmt = $conn->prepare("UPDATE Payments SET DueAmount = ?, RemainingBalance = 0.00, Status = ? WHERE PaymentID = ?");
                 $updatePaymentStmt->bind_param("dsi", $totalDueAmount, $status, $payment['PaymentID']);
                 $updatePaymentStmt->execute();
                 $updatePaymentStmt->close();
             } else {
-                                if ($paymentConfirmed && $totalDueAmount > 0) {
+                if ($paymentConfirmed && $totalDueAmount > 0) {
                     $totalDueAmount = 0;
                 }
 
-                                $status = $totalDueAmount > 0 ? 'Partial' : 'Paid';
+                $status = $totalDueAmount > 0 ? 'Partial' : 'Paid';
                 $insertPaymentStmt = $conn->prepare("INSERT INTO Payments (RentalID, Amount, RemainingBalance, DueAmount, PaymentDate, Method, Status) VALUES (?, ?, 0.00, ?, ?, 'Cash', ?)");
                 $insertPaymentStmt->bind_param("iddss", $id, $rental['TotalCost'], $totalDueAmount, $returnedDate, $status);
                 $insertPaymentStmt->execute();
                 $insertPaymentStmt->close();
             }
 
-                        $existingIssuesStmt = $conn->prepare("SELECT COUNT(*) as issue_count FROM Issues WHERE RentalID = ? AND Status != 'Resolved'");
+            $existingIssuesStmt = $conn->prepare("SELECT COUNT(*) as issue_count FROM Issues WHERE RentalID = ? AND Status != 'Resolved'");
             $existingIssuesStmt->bind_param('i', $id);
             $existingIssuesStmt->execute();
             $existingIssuesResult = $existingIssuesStmt->get_result();
             $existingIssuesCount = $existingIssuesResult->fetch_assoc()['issue_count'];
             $existingIssuesStmt->close();
 
-                        $vehicleStatus = ($hasIssue || $existingIssuesCount > 0) ? 'Maintenance' : 'Available';
+            $vehicleStatus = ($hasIssue || $existingIssuesCount > 0) ? 'Maintenance' : 'Available';
             $conn->prepare("UPDATE Vehicles SET Status = ? WHERE VehicleID = ?")->execute([$vehicleStatus, $rental['VehicleID']]);
 
             $conn->commit();
 
-                        error_log("Vehicle returned - RentalID: $id, TotalDueAmount: $totalDueAmount, PaymentConfirmed: " . ($paymentConfirmed ? 'Yes' : 'No'));
+            error_log("Vehicle returned - RentalID: $id, TotalDueAmount: $totalDueAmount, PaymentConfirmed: " . ($paymentConfirmed ? 'Yes' : 'No'));
 
             echo "<script>window.location.href = '../dashboard.php?table=Rentals';</script>";
             exit;
@@ -131,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         $conn->autocommit(TRUE);
     } else {
-                $fields = [];
+        $fields = [];
         $values = [];
         $types = '';
 
@@ -167,191 +166,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="rental-modal.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
-        function toggleIssueFields() {
-            const hasIssue = document.getElementById('hasIssue').checked;
-            document.getElementById('issueFields').style.display = hasIssue ? 'block' : 'none';
-            
-                        const vehicleStatusWarning = document.getElementById('vehicleStatusWarning');
-            if (vehicleStatusWarning) {
-                vehicleStatusWarning.style.display = hasIssue ? 'block' : 'none';
-            }
-        }
-        function calculateLateFee() {
-            const returnDate = document.getElementById('ReturnedDate').value;
-            const dueDate = '<?php echo $rental['ToReturnDate']; ?>';
-            const dailyRate = <?php echo $rental['DailyRate']; ?>;
-            if (returnDate && new Date(returnDate) > new Date(dueDate)) {
-                const lateDays = Math.ceil((new Date(returnDate) - new Date(dueDate)) / (1000 * 3600 * 24));
-                const lateFee = lateDays * (dailyRate * 1.5);
-                document.getElementById('lateFeeInfo').innerHTML = '<div class="late-fee-warning"><i class="fas fa-exclamation-triangle"></i> Late return: ' + lateDays + ' day(s) × ₱' + (dailyRate * 1.5).toFixed(2) + ' = ₱' + lateFee.toFixed(2) + '</div>';
-            } else {
-                document.getElementById('lateFeeInfo').innerHTML = '';
-            }
-        }
-
-        function showPaymentModal(dueItems, totalDue) {
-            const modal = document.createElement('div');
-            modal.className = 'payment-modal-overlay';
-
-            const modalContent = document.createElement('div');
-            modalContent.className = 'payment-modal-content';
-
-            modalContent.innerHTML = `
-                <div class="modal-header">
-                    <div class="modal-icon-container">
-                        <i class="fas fa-exclamation-triangle modal-icon"></i>
-                    </div>
-                    <h2 class="modal-title">Payment Confirmation Required</h2>
-                    <p class="modal-subtitle">The following amounts are due for this rental:</p>
-                </div>
-                
-                <div class="due-items-container">
-                    ${dueItems.map(item => `
-                        <div class="due-item">
-                            <span class="due-item-description">
-                                <i class="${item.icon} due-item-icon"></i>${item.description}
-                            </span>
-                            <span class="due-amount">₱${item.amount.toFixed(2)}</span>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div class="total-section">
-                    <div class="total-row">
-                        <span class="total-label">Total Amount Due:</span>
-                        <span class="total-amount">₱${totalDue.toFixed(2)}</span>
-                    </div>
-                </div>
-                
-                <p class="confirmation-text">
-                    Has the customer paid all due amounts above?
-                </p>
-                
-                <div class="modal-buttons">
-                    <button class="modal-btn btn-cancel" onclick="closePaymentModal(false)">
-                        <i class="fas fa-times btn-icon"></i>Not Paid
-                    </button>
-                    <button class="modal-btn btn-confirm" onclick="closePaymentModal(true)">
-                        <i class="fas fa-check btn-icon"></i>Paid
-                    </button>
-                </div>
-            `;
-
-            modal.appendChild(modalContent);
-            document.body.appendChild(modal);
-
-                        document.body.style.overflow = 'hidden';
-
-            return modal;
-        }
-
-        function closePaymentModal(confirmed) {
-            const modal = document.querySelector('.payment-modal-overlay');
-            if (modal) {
-                modal.remove();
-                document.body.style.overflow = '';
-
-                if (confirmed) {
-                                        const form = document.querySelector('form');
-                    const hiddenField = document.createElement('input');
-                    hiddenField.type = 'hidden';
-                    hiddenField.name = 'payment_confirmed';
-                    hiddenField.value = '1';
-                    form.appendChild(hiddenField);
-
-                                        form.submit();
-                }
-            }
-        }
-
-        function confirmReturn() {
-            const returnDate = document.getElementById('ReturnedDate').value;
-            const dueDate = '<?php echo $rental['ToReturnDate']; ?>';
-            const paymentMethod = '<?php echo $payment ? strtolower($payment['Method']) : ''; ?>';
-            const dueAmount = <?php echo $payment ? $payment['DueAmount'] : 0; ?>;
-            const remainingBalance = <?php echo $payment ? $payment['RemainingBalance'] : 0; ?>;
-
-                        let dueItems = [];
-            let totalDue = 0;
-
-            if (paymentMethod === 'downpayment' && remainingBalance > 0) {
-                dueItems.push({
-                    icon: 'fas fa-credit-card',
-                    description: 'Remaining Balance (Downpayment)',
-                    amount: remainingBalance
-                });
-                totalDue += remainingBalance;
-            }
-
-            if (dueAmount > 0) {
-                dueItems.push({
-                    icon: 'fas fa-exclamation-circle',
-                    description: 'Outstanding Due Amount',
-                    amount: dueAmount
-                });
-                totalDue += dueAmount;
-            }
-
-                        if (returnDate && new Date(returnDate) > new Date(dueDate)) {
-                const lateDays = Math.ceil((new Date(returnDate) - new Date(dueDate)) / (1000 * 3600 * 24));
-                const lateFee = lateDays * (<?php echo $rental['DailyRate']; ?> * 1.5);
-                dueItems.push({
-                    icon: 'fas fa-clock',
-                    description: `Late Return Fee (${lateDays} day${lateDays > 1 ? 's' : ''})`,
-                    amount: lateFee
-                });
-                totalDue += lateFee;
-            }
-
-            if (dueItems.length > 0) {
-                showPaymentModal(dueItems, totalDue);
-                return false;             }
-
-            return true;         }
-
-                document.addEventListener('DOMContentLoaded', function () {
-            const issueUpload = document.getElementById('issue-upload');
-            const issueUploadText = document.getElementById('issue-upload-text');
-            const issueFileName = document.getElementById('issue-file-name');
-
-            if (issueUpload) {
-                issueUpload.addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        issueUploadText.textContent = 'Image selected';
-                        issueFileName.textContent = 'Selected: ' + file.name;
-                        issueFileName.style.display = 'block';
-
-                                                const uploadLabel = issueUpload.closest('.image-upload');
-                        uploadLabel.style.borderColor = '#059669';
-                        uploadLabel.style.backgroundColor = '#f0fdf4';
-                    }
-                });
-            }
-
-                        const uploadLabel = document.querySelector('.image-upload');
-            if (uploadLabel) {
-                uploadLabel.addEventListener('mouseover', function () {
-                    this.style.borderColor = '#94a3b8';
-                    this.style.backgroundColor = '#f1f5f9';
-                });
-
-                uploadLabel.addEventListener('mouseout', function () {
-                    const file = document.getElementById('issue-upload').files[0];
-                    if (!file) {
-                        this.style.borderColor = '#cbd5e1';
-                        this.style.backgroundColor = '#f8fafc';
-                    }
-                });
-            }
-        });
-        <?php if (!$isReturned): ?>
-            window.onload = function () {
-                document.getElementById('ReturnedDate').value = new Date().toISOString().split('T')[0];
-                calculateLateFee();
-            }
-        <?php endif; ?>
+        window.rentalData = {
+            dueDate: '<?php echo $rental['ToReturnDate']; ?>',
+            dailyRate: <?php echo $rental['DailyRate']; ?>,
+            paymentMethod: '<?php echo $payment ? strtolower($payment['Method']) : ''; ?>',
+            dueAmount: <?php echo $payment ? $payment['DueAmount'] : 0; ?>,
+            remainingBalance: <?php echo $payment ? $payment['RemainingBalance'] : 0; ?>,
+            isReturned: <?php echo $isReturned ? 'true' : 'false'; ?>
+        };
     </script>
+    <script src="edit-rentals.js"></script>
 </head>
 
 <body>
@@ -382,16 +206,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div><strong>Total Cost:</strong> ₱<?php echo number_format($rental['TotalCost'], 2); ?></div>
                     <div><strong>Daily Rate:</strong> ₱<?php echo number_format($rental['DailyRate'], 2); ?></div>
                 </div>
-                
-                <?php 
-                                if (!$isReturned) {
+
+                <?php
+                if (!$isReturned) {
                     $existingIssuesStmt = $conn->prepare("SELECT COUNT(*) as issue_count FROM Issues WHERE RentalID = ? AND Status != 'Resolved'");
                     $existingIssuesStmt->bind_param('i', $id);
                     $existingIssuesStmt->execute();
                     $existingIssuesResult = $existingIssuesStmt->get_result();
                     $existingIssuesCount = $existingIssuesResult->fetch_assoc()['issue_count'];
                     $existingIssuesStmt->close();
-                    
+
                     if ($existingIssuesCount > 0) {
                         echo '<div style="margin-top: 1rem; padding: 0.75rem; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 0.375rem; color: #991b1b;">';
                         echo '<i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>';
@@ -453,11 +277,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-group">
                         <div class="issue-checkbox-container">
                             <label for="hasIssue" class="issue-checkbox-label">Report issue with the vehicle</label>
-                            <input type="checkbox" id="hasIssue" name="hasIssue" value="1" onchange="toggleIssueFields()" class="issue-checkbox">
-                        </div>
-                        <div id="vehicleStatusWarning" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 0.375rem; color: #856404;">
-                            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-                            <strong>Note:</strong> Reporting an issue will set the vehicle status to "Maintenance" instead of "Available".
+                            <input type="checkbox" id="hasIssue" name="hasIssue" value="1" onchange="toggleIssueFields()"
+                                class="issue-checkbox">
                         </div>
                     </div>
 
@@ -499,7 +320,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <select name="CustomerID" required>
                             <?php while ($c = $customers->fetch_assoc()): ?>
                                 <option value="<?php echo $c['CustomerID']; ?>" <?php echo $c['CustomerID'] == $rental['CustomerID'] ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($c['Name']); ?></option>
+                                    <?php echo htmlspecialchars($c['Name']); ?>
+                                </option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -508,7 +330,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <select name="VehicleID" required>
                             <?php while ($v = $vehicles->fetch_assoc()): ?>
                                 <option value="<?php echo $v['VehicleID']; ?>" <?php echo $v['VehicleID'] == $rental['VehicleID'] ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($v['Model'] . ' - ' . $v['PlateNumber']); ?></option>
+                                    <?php echo htmlspecialchars($v['Model'] . ' - ' . $v['PlateNumber']); ?>
+                                </option>
                             <?php endwhile; ?>
                         </select>
                     </div>
